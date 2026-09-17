@@ -213,5 +213,7 @@ public class Board {
         return grid[row][column];
     }
 
-
+    public Ship getShip(int shipIndex){
+        return ship.get(shipIndex);
+    }
 }
