@@ -9,6 +9,8 @@ public class Ship {
     public Ship(String name, int length){
         this.name = name;
         this.length = length;
+        this.hits =0;
+        this.position = new ArrayList<>();
     }
 
     public String getName(){
@@ -25,6 +27,10 @@ public class Ship {
 
     public ArrayList<Square> getPosition(){
         return position;
+    }
+
+    public void addPosition(Square square){
+        position.add(square);
     }
 
 
