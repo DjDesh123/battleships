@@ -1,7 +1,8 @@
 public class Square {
 
-    private enum SquareState{
+    public enum SquareState{
         WATER,
+        SHIP,
         HIT,
         MISS
     }
@@ -15,6 +16,8 @@ public class Square {
     Square(int rows, int columns){
         this.rows = rows;
         this.columns = columns;
+        this.state = SquareState.WATER;
+        this.ship = null;
     }
 
     public Ship getShip(){
