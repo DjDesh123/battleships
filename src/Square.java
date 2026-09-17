@@ -1,6 +1,6 @@
 public class Square {
 
-    private enum SquareState{
+    public enum SquareState{
         WATER,
         SHIP,
         HIT,
