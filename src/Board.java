@@ -165,5 +165,53 @@ public class Board {
         return false;
     }
 
+    public boolean attackSquare(int row, int column){
+        Square square = grid[rows][column];
+
+        //prevent the smae squares from being attacked twice
+        if(square.getState() == Square.SquareState.HIT || square.getState() == Square.SquareState.MISS){
+            return false;
+        }
+
+        if (square.getShip() != null) {
+
+            square.setState(Square.SquareState.HIT);
+
+            square.getShip().takeHit();
+
+            return true;
+        }
+
+        square.setState(Square.SquareState.MISS);
+
+        return false;
+
+    }
+
+    public boolean allShipsSunk() {
+
+        for (Ship currentShip : ship) {
+
+            if (!currentShip.isSunk()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getColumns() {
+        return columns;
+    }
+
+    public Square getSquare(int row, int column) {
+        return grid[row][column];
+    }
+
 
 }

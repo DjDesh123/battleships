@@ -1,71 +1,94 @@
+import java.util.Random;
+
 public class Game {
-    public enum Difficulty{
+
+    public enum Difficulty {
         EASY,
         NORMAL,
         HARD
     }
 
-    public enum GameState{
+    public enum GameState {
         SETUP,
         PLAYING,
         GAMEOVER
-
     }
 
-    private Board board;
-    private Player player;
+    private Player humanPlayer;
+    private Player computerPlayer;
+
     private Difficulty difficulty;
     private GameState gameState;
-    private int shotsRemaing;
 
+    private int shotsRemaining;
 
-
-    public Game(Difficulty difficulty){
+    public Game(Difficulty difficulty) {
         this.difficulty = difficulty;
+        this.gameState = GameState.SETUP;
     }
 
-    public void startGame(){
-        // assigns board and shots depending on difficulty
-        switch(difficulty){
+    public void startGame() {
+
+        switch (difficulty) {
             case EASY:
-                board = new Board(5,5);
-                shotsRemaing = 60;
+                shotsRemaining = 60;
                 break;
+
             case NORMAL:
-                board = new Board(10,10);
-                shotsRemaing = 50;
+                shotsRemaining = 50;
                 break;
+
             case HARD:
-                board = new Board(12,12);
-                shotsRemaing = 40;
+                shotsRemaining = 40;
                 break;
         }
 
-        GameState gamestate = GameState.PLAYING;
+        humanPlayer = new Player("human");
+        computerPlayer = new Player("computer");
 
-        // creates the player and computer
-
-        Player humanPlayer = new Player("human");
-        Player computerPlayer = new Player("computer");
-
-        // gets their copy of the boards and place their ships
         computerPlayer.getBoard().placeComputerShip();
-
-        // human only creates their fleet for now
         humanPlayer.getBoard().createFleet();
 
+        gameState = GameState.SETUP;
+    }
 
-        gamestate = GameState.SETUP;
+    public boolean humanAttack(int row, int column) {
+
+        boolean hit = computerPlayer.getBoard().attackSquare(row, column);
+        shotsRemaining--;
+
+        if (computerPlayer.getBoard().allShipsSunk()) {
+            gameState = GameState.GAMEOVER;
+        }
+
+        return hit;
+    }
+
+    public boolean comnputerAttack(){
+        Random random = new Random();
+
+        Board humanBoard = humanPlayer.getBoard();
+
+
+        int row;
+        int column;
+
+        do {
+            row = random.nextInt(humanBoard.getRows());
+            column = random.nextInt(humanBoard.getColumns());
+
+        }while(humanBoard.getSquare(row, column).getState() == Square.SquareState.HIT || humanBoard.getSquare(row, column).getState() == Square.SquareState.MISS);
+
+        // attacks the human player's board
+        boolean hit = humanBoard.attackSquare(row, column);
+
+        // checks whether the computer has sunk every human ship
+        if (humanBoard.allShipsSunk()) {
+            gameState = GameState.GAMEOVER;
+        }
+
+        return hit;
 
 
     }
-
-
-
-
-
-
-
-
-
 }

@@ -33,7 +33,13 @@ public class Ship {
         position.add(square);
     }
 
+    public void takeHit() {
+        hits++;
+    }
 
+    public boolean isSunk() {
+        return hits >= length;
+    }
 
 
 
