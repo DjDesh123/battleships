@@ -25,8 +25,7 @@ public class Game {
     }
 
     public void startGame(){
-        // assigns board and shots depending of difficulty
-
+        // assigns board and shots depending on difficulty
         switch(difficulty){
             case EASY:
                 board = new Board(5,5);
@@ -43,6 +42,21 @@ public class Game {
         }
 
         GameState gamestate = GameState.PLAYING;
+
+        // creates the player and computer
+
+        Player humanPlayer = new Player("human");
+        Player computerPlayer = new Player("computer");
+
+        // gets their copy of the boards and place their ships
+        computerPlayer.getBoard().placeComputerShip();
+
+        // human only creates their fleet for now
+        humanPlayer.getBoard().createFleet();
+
+
+        gamestate = GameState.SETUP;
+
 
     }
 

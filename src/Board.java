@@ -152,9 +152,17 @@ public class Board {
         }
     }
 
-    public void placeComputerSHip(){
+    public void placeComputerShip(){
         createFleet();
         placeFleetRandomly();
+    }
+
+    public boolean placeHumanShip(Ship ship, int row, int column, Direction direction){
+        if (checkPlaceShip(ship,row,column,direction)){
+            placeShip(ship,row,column,direction);
+            return true;
+        }
+        return false;
     }
 
 
