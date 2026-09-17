@@ -5,9 +5,10 @@ public class Player {
 
 
 
-    public Player(String name){
+    public Player(String name, int rows, int columns){
         this.name = name;
         this.shotsTaken = 0;
+        this.board = new Board(rows,columns);
     }
 
     public String getName(String name){
@@ -17,21 +18,22 @@ public class Player {
         this.name = name;
     }
 
-    public void attack(int row,int column){
-
-    }
-
     public int getShotTaken(){
         return shotsTaken;
-
-    }
-
-    public void increaseShotTaken(){
-
     }
 
     public Board getBoard(){
         return board;
+    }
+
+    public boolean placeShip(int shipIndex, int row,int column, Board.Direction direction){
+
+
+        // selects the ship
+        Ship selectedShip = board.getShip(shipIndex);
+
+        // places the actual ship
+        return board.placeHumanShip(selectedShip,row,column,direction);
     }
 
 }

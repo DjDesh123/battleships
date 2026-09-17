@@ -14,11 +14,20 @@ public class Game {
         GAMEOVER
     }
 
+    public enum GameMode{
+        COMPUTER,
+        MULTIPLAYER
+    }
+
     private Player humanPlayer;
     private Player computerPlayer;
 
+    private Player humanPlayer1;
+    private Player humanPlayer2;
+
     private Difficulty difficulty;
     private GameState gameState;
+    private GameMode gameMode;
 
     private int shotsRemaining;
 
@@ -29,25 +38,47 @@ public class Game {
 
     public void startGame() {
 
+        int rows = 0;
+        int columns = 0;
+
+        // sets values via picking difficulty
         switch (difficulty) {
             case EASY:
+                rows = 5;
+                columns = 5;
                 shotsRemaining = 60;
                 break;
 
             case NORMAL:
+                rows = 10;
+                columns = 10;
                 shotsRemaining = 50;
                 break;
 
             case HARD:
+                rows = 12;
+                columns = 10;
                 shotsRemaining = 40;
                 break;
         }
 
-        humanPlayer = new Player("human");
-        computerPlayer = new Player("computer");
+        // creates the players
+        switch(gameMode){
+            case COMPUTER:
+                humanPlayer = new Player("human", rows, columns);
+                computerPlayer = new Player("computer",rows,columns);
 
-        computerPlayer.getBoard().placeComputerShip();
-        humanPlayer.getBoard().createFleet();
+                computerPlayer.getBoard().placeComputerShip();
+                humanPlayer.getBoard().createFleet();
+                break;
+            case MULTIPLAYER:
+                humanPlayer1 = new Player("human1",rows,columns);
+                humanPlayer2 = new Player("human2",rows,columns);
+
+                humanPlayer1.getBoard().createFleet();
+                humanPlayer2.getBoard().createFleet();
+                break;
+        }
 
         gameState = GameState.SETUP;
     }
