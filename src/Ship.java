@@ -9,24 +9,8 @@ public class Ship {
     public Ship(String name, int length){
         this.name = name;
         this.length = length;
-        this.hits =0;
+        this.hits = 0;
         this.position = new ArrayList<>();
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public int getLength(){
-        return length;
-    }
-
-    public int getHits(){
-        return hits;
-    }
-
-    public ArrayList<Square> getPosition(){
-        return position;
     }
 
     public void addPosition(Square square){
@@ -41,6 +25,21 @@ public class Ship {
         return hits >= length;
     }
 
+    public void clearPosition(){
+        position.clear();
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getLength(){
+        return length;
+    }
+
+    public ArrayList<Square> getPosition(){
+        return position;
+    }
 
 
 

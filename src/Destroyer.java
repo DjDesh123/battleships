@@ -1,5 +1,5 @@
 public class Destroyer extends Ship {
     public Destroyer(){
-        super("Destroyer",3);
+        super("Destroyer",2);
     }
 }
