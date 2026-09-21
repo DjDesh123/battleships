@@ -1,4 +1,3 @@
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -9,23 +8,32 @@ public class Board {
         VERTICAL
     }
 
-    private Square[][] grid;
-    private ArrayList<Ship> ship;
     private int rows;
     private int columns;
+    private Square[][] grid;
+    private ArrayList<Ship> ships;
 
 
     public Board (int rows, int columns){
         this.rows = rows;
         this.columns = columns;
 
-        ship = new ArrayList<>();
+        ships = new ArrayList<>();
         createGrid(rows,columns);
     }
 
+    /**
+     *
+     * @param rows number of rows in the board
+     * @param columns number of columns in the board
+     *
+     */
     public void createGrid(int rows, int columns){
+
+        // creates a 2d array that can hold square references
         grid = new Square[rows][columns];
 
+        // while looping through the 2d array creates a Square object for that cell and stores the reference in the array
         for(int row = 0; row < rows; row++){
             for(int column = 0; column < columns; column++){
                 grid[row][column] = new Square(row, column);
@@ -33,17 +41,30 @@ public class Board {
         }
     }
 
+    /**
+     * creates the fleet with the subclasses
+     */
     public void createFleet(){
         // add the ships to the arrayList
-        ship.add(new BattleShip());
-        ship.add(new Cruiser());
-        ship.add(new Cruiser());
-        ship.add(new Destroyer());
-        ship.add(new Destroyer());
-        ship.add(new Destroyer());
+        ships.add(new BattleShip());
+        ships.add(new Cruiser());
+        ships.add(new Cruiser());
+        ships.add(new Destroyer());
+        ships.add(new Destroyer());
+        ships.add(new Destroyer());
 
     }
 
+    /**
+     * checks whether a ship can be placed at the specified position
+     * without going out of bounds or overlapping with another ship or touching another ship
+     *
+     * @param ship the ship being checked
+     * @param row the starting row for the ship
+     * @param column the starting column for the ship
+     * @param direction the direction which the ship can be placed
+     * @return true if its valid false is not
+     */
     private boolean checkPlaceShip(Ship ship, int row, int column, Direction direction) {
 
         int length = ship.getLength();
@@ -98,6 +119,13 @@ public class Board {
     }
 
 
+    /** this is to actually allow the user to place their ship
+     *
+     * @param ship the ship being placed
+     * @param row the row for the ship being placed
+     * @param column the column for the ship being placed
+     * @param direction the direction the ship is being placed
+     */
     private void placeShip(Ship ship, int row,int column, Direction direction){
         int length = ship.getLength();
 
@@ -122,7 +150,10 @@ public class Board {
         }
     }
 
-
+    /** this is for the computer to randomly place a ship on their board
+     *
+     * @param ship the ship thats being placed randomly
+     */
     public void placeShipRandomly(Ship ship) {
 
         Random random = new Random();
@@ -146,33 +177,60 @@ public class Board {
         }
     }
 
+    // this method is to cycle through the ArrayList<Ship> and populate the entire board for the computer side
     private void placeFleetRandomly(){
-        for (Ship currentShip : ship){
+        for (Ship currentShip : ships){
             placeShipRandomly(currentShip);
         }
     }
 
+    // added this method to have an application layer  and make it look neater in the codebase to access
     public void placeComputerShip(){
         createFleet();
         placeFleetRandomly();
     }
 
+    /**
+     * places the human ships if its valid to do so
+     *
+     * @param ship the ship thats being placed
+     * @param row the row that the ship is being placed on
+     * @param column the column that the ship is being placed on
+     * @param direction the direction the ship is being placed on
+     * @return true if the ship being properly placed false if not
+     */
     public boolean placeHumanShip(Ship ship, int row, int column, Direction direction){
-        if (checkPlaceShip(ship,row,column,direction)){
+
+        // prevents the same ship being placed twice
+        if(!ship.getPosition().isEmpty()){
+            return false;
+        }
+
+        //checks if the ship can be placed or not
+        if(checkPlaceShip(ship,row,column,direction)){
             placeShip(ship,row,column,direction);
             return true;
         }
+
         return false;
     }
 
+    /**
+     * allows the user to attack a certain square and see if it was a hit or miss
+     *
+     * @param row the row that is being attacked
+     * @param column the column that is being attacked
+     * @return true if the ship was hit false if it was a miss or the square was already attakced
+     */
     public boolean attackSquare(int row, int column){
-        Square square = grid[rows][column];
+        Square square = grid[row][column];
 
-        //prevent the smae squares from being attacked twice
+        //prevent the same squares from being attacked twice
         if(square.getState() == Square.SquareState.HIT || square.getState() == Square.SquareState.MISS){
             return false;
         }
 
+        // if theres a ship present then turn the state to hit and retunr true
         if (square.getShip() != null) {
 
             square.setState(Square.SquareState.HIT);
@@ -182,16 +240,17 @@ public class Board {
             return true;
         }
 
+        // if not then set the square to miss and return false
         square.setState(Square.SquareState.MISS);
 
         return false;
 
     }
 
+    // loops through all ships and checks if its sunk or not
     public boolean allShipsSunk() {
 
-        for (Ship currentShip : ship) {
-
+        for (Ship currentShip : ships) {
             if (!currentShip.isSunk()) {
                 return false;
             }
@@ -200,6 +259,38 @@ public class Board {
         return true;
     }
 
+    public void removeShip(Ship ship){
+
+        if (!ship.getPosition().isEmpty()) {
+
+            // for every square object sotres inside the sips position set to null then to the water state
+            for (Square square : ship.getPosition()) {
+                square.setShip(null);
+                square.setState(Square.SquareState.WATER);
+            }
+
+            ship.clearPosition();
+        }
+    }
+
+    // checks if all ships have been placed
+    public boolean allShipsPlaced(){
+
+        for(Ship ship : ships){
+
+            if(ship.getPosition().size() != ship.getLength()){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     *
+     * Getters for  rows, columns, Square and ships
+     *
+     */
 
     public int getRows() {
         return rows;
@@ -213,7 +304,8 @@ public class Board {
         return grid[row][column];
     }
 
-    public Ship getShip(int shipIndex){
-        return ship.get(shipIndex);
+    public ArrayList<Ship> getShips(){
+        return ships;
     }
+
 }
