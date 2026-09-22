@@ -416,5 +416,9 @@ public class Game {
         return humanPlayer2;
     }
 
+    public int getShotsRemaining() {
+        return shotsRemaining;
+    }
+
 
 }
